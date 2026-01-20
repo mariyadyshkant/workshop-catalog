@@ -11,3 +11,5 @@ workshop-catalog-react/dist
 # OS / Editor
 .DS_Store
 .vscode
+
+.vite
