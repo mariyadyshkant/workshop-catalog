@@ -1,0 +1,13 @@
+# Laravel
+workshop-catalog-laravel/vendor
+workshop-catalog-laravel/node_modules
+workshop-catalog-laravel/.env
+workshop-catalog-laravel/storage/*.key
+
+# React
+workshop-catalog-react/node_modules
+workshop-catalog-react/dist
+
+# OS / Editor
+.DS_Store
+.vscode
