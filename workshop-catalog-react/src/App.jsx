@@ -1,15 +1,18 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { DefaultLayout } from './layouts/DefaultLayout'
 import { CoursesList } from './pages/CoursesList'
-import './App.css'
+import { CourseDetail } from './pages/CourseDetail'
 
 function App() {
-
   return (
-    <>
-
-      <h1>Workshop Catalog</h1>
-      <CoursesList />
-
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<DefaultLayout />}>
+          <Route path="/" element={<CoursesList />} />
+          <Route path="/courses/:id" element={<CourseDetail />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   )
 }
 
