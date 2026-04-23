@@ -47,20 +47,26 @@ class CourseController extends Controller
             'end_date' => 'nullable|date|after:start_date',
             'language' => 'required|string|max:50',
             'delivery_mode' => 'required|string|max:20',
+            'image' => 'nullable|image|max:2048',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',
             'teacher_id' => 'required|exists:teachers,id',
         ]);
+
+        if ($request->hasFile('image')) {
+            $validateData['image'] = $request->file('image')->store('courses', 'public');
+        }
+
         Course::create($validateData);
-        return redirect()->route('courses.index')->with('success', 'Course created successfully.');
+        return redirect()->route('courses.index')->with('success', 'Corso creato con successo!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Course $course)
     {
-        //
+        return view('admin.courses.show', compact('course'));
     }
 
     /**
@@ -90,13 +96,18 @@ class CourseController extends Controller
             'end_date' => 'nullable|date|after:start_date',
             'language' => 'required|string|max:50',
             'delivery_mode' => 'required|string|max:20',
+            'image' => 'nullable|image|max:2048',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',
             'teacher_id' => 'required|exists:teachers,id',
         ]);
 
+        if ($request->hasFile('image')) {
+            $validateData['image'] = $request->file('image')->store('courses', 'public');
+        }
+
         $course->update($validateData);
-        return redirect()->route('courses.index')->with('success', 'Course updated successfully.');
+        return redirect()->route('courses.index')->with('success', 'Corso aggiornato con successo!');
     }
 
     /**
@@ -105,6 +116,6 @@ class CourseController extends Controller
     public function destroy(Course $course)
     {
         $course->delete();
-        return redirect()->route('courses.index')->with('success', 'Course deleted successfully.');
+        return redirect()->route('courses.index')->with('success', 'Corso eliminato con successo!');
     }
 }
