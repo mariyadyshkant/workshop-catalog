@@ -7,7 +7,7 @@ export function CourseDetail() {
     const [course, setCourse] = useState(null)
 
     useEffect(() => {
-        axios.get(`http://localhost:8000/api/courses/${id}`)
+        axios.get(`${import.meta.env.VITE_API_URL}/courses/${id}`)
             .then(response => setCourse(response.data))
             .catch(error => console.error(error))
     }, [id])
@@ -28,7 +28,7 @@ export function CourseDetail() {
             {/* Immagine */}
             {course.image ? (
                 <img
-                    src={`http://localhost:8000/storage/${course.image}`}
+                    src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${course.image}`}
                     alt={course.title}
                     className="w-100 rounded-4 mb-4"
                     style={{ maxHeight: '350px', objectFit: 'cover' }}

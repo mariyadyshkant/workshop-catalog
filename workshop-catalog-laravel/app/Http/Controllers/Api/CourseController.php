@@ -8,10 +8,31 @@ use App\Models\Course;
 
 class CourseController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $courses = Course::with(['category', 'level', 'teacher'])->get();
-        return response()->json($courses);
+        $query = Course::with(['category', 'level', 'teacher']);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('title', 'like', "%{$search}%")
+                  ->orWhere('description', 'like', "%{$search}%");
+            });
+        }
+
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        if ($request->filled('level_id')) {
+            $query->where('level_id', $request->level_id);
+        }
+
+        if ($request->filled('delivery_mode')) {
+            $query->where('delivery_mode', $request->delivery_mode);
+        }
+
+        return response()->json($query->get());
     }
     public function show(Course $course)
     {

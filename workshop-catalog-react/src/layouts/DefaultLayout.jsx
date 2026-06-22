@@ -2,23 +2,27 @@ import { Link, Outlet } from "react-router-dom";
 
 export function DefaultLayout() {
     return (
-        <> 
-            <nav className="navbar-bg navbar navbar-expand-lg navbar-light fixed-top">
+        <>
+            <nav className="navbar navbar-expand-lg fixed-top navbar-corsorama">
                 <div className="container">
-                    <a className="navbar-brand fs-2 fw-bold text-light" href="#">Workshop Catalog</a>
+                    <Link className="navbar-brand" to="/">
+                        <span className="brand-logo">🎓</span>
+                        <span className="brand-name">Corsorama</span>
+                    </Link>
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <Link className="nav-link fs-4 text-light" to="/">Corsi</Link>
+                            <Link className="nav-link nav-link-light" to="/">Catalogo</Link>
                         </li>
                     </ul>
                 </div>
             </nav>
-            <main className="container mt-4" style={{ paddingBottom: '80px', paddingTop: '70px' }}>
-                    <Outlet />
+            <main style={{ paddingTop: '64px', minHeight: '100vh' }}>
+                <Outlet />
             </main>
-            <footer className="bg-dark text-white py-3 mt-5" style={{ position: 'fixed', bottom: 0, left: 0, right: 0 }}>
+            <footer className="footer-corsorama py-4 mt-5">
                 <div className="container text-center">
-                    <p className="mb-0 small">© {new Date().getFullYear()} Workshop Catalog</p>
+                    <p className="mb-1 fw-semibold">🎓 Corsorama</p>
+                    <p className="mb-0 small opacity-75">© {new Date().getFullYear()} — Tutti i diritti riservati</p>
                 </div>
             </footer>
         </>

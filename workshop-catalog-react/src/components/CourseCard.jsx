@@ -1,33 +1,74 @@
 import { Link } from 'react-router-dom'
 
+const STATUS_STYLES = {
+    'In programma':   { bg: '#e8f5e9', color: '#2e7d32' },
+    'In aggiornamento': { bg: '#fff8e1', color: '#f57f17' },
+    'Cancellato':     { bg: '#fce4ec', color: '#c62828' },
+}
+
+const MODE_ICON = {
+    'Online': '💻',
+    'In presenza': '📍',
+    'Misto': '🔀',
+}
+
 export function CourseCard({ course }) {
+    const statusStyle = STATUS_STYLES[course.status] || { bg: '#f0f0f0', color: '#555' }
+
     return (
-        <div className="card h-100 border-0 shadow-sm rounded-4">
+        <div className="course-card h-100">
             {course.image ? (
-                <img 
-                    src={`http://localhost:8000/storage/${course.image}`} 
-                    className="card-img-top rounded-top-4" 
+                <img
+                    src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${course.image}`}
+                    className="course-card-img"
                     alt={course.title}
-                    style={{ height: '180px', objectFit: 'cover' }}
                 />
             ) : (
-                <div className="bg-light rounded-top-4 d-flex align-items-center justify-content-center" style={{ height: '180px' }}>
-                    <span className="text-muted fs-1">🖼️</span>
+                <div className="course-card-placeholder">
+                    <span>{categoryEmoji(course.category?.name)}</span>
                 </div>
             )}
-            <div className="card-body">
-                <span className="badge bg-primary-subtle text-primary mb-2">{course.category?.name}</span>
-                <h5 className="card-title fw-bold">{course.title}</h5>
-                <p className="card-text text-muted small">{course.description?.substring(0, 80)}...</p>
-                <p className="mb-1 small">Livello: <strong>{course.level?.name}</strong></p>
-                <p className="mb-1 small">Docente: <strong>{course.teacher?.name} {course.teacher?.surname}</strong></p>
-                <p className="mb-0 small">Durata: <strong>{course.duration_hours}h</strong></p>
+            <div className="course-card-body">
+                <div className="d-flex gap-2 flex-wrap mb-2">
+                    <span className="badge-category">{course.category?.name}</span>
+                    <span
+                        className="badge-status"
+                        style={{ background: statusStyle.bg, color: statusStyle.color }}
+                    >
+                        {course.status}
+                    </span>
+                </div>
+                <h5 className="course-card-title">{course.title}</h5>
+                <p className="course-card-desc">{course.description?.substring(0, 90)}...</p>
+
+                <div className="course-card-meta">
+                    <span title="Livello">📊 {course.level?.name}</span>
+                    <span title="Durata">⏱ {course.duration_hours}h</span>
+                    <span title="Modalità">{MODE_ICON[course.delivery_mode] || '🏫'} {course.delivery_mode}</span>
+                </div>
             </div>
-            <div className="card-footer border-0 bg-white pb-3">
-                <Link to={`/courses/${course.id}`} className="btn btn-sm btn-outline-primary w-100">
-                    Scopri di più →
+            <div className="course-card-footer">
+                <small className="text-muted">
+                    {course.teacher?.name} {course.teacher?.surname}
+                </small>
+                <Link to={`/courses/${course.id}`} className="btn-card-detail">
+                    Scopri →
                 </Link>
             </div>
         </div>
     )
+}
+
+function categoryEmoji(name) {
+    const map = {
+        'Programmazione': '💻',
+        'Fotografia': '📷',
+        'Cucina': '🍝',
+        'Giardinaggio': '🌱',
+        'Arte e Disegno': '🎨',
+        'Teatro': '🎭',
+        'Produttività': '⚡',
+        'Fai Da Te': '🔨',
+    }
+    return map[name] || '📚'
 }

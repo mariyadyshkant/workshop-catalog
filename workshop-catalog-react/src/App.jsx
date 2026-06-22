@@ -5,7 +5,7 @@ import { CourseDetail } from './pages/CourseDetail'
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<CoursesList />} />

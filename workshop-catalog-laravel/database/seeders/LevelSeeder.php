@@ -8,15 +8,12 @@ use App\Models\Level;
 
 class LevelSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
         $levels = [
             'Principiante',
             'Intermedio',
-            'Avanzado',
+            'Avanzato',
         ];
         foreach ($levels as $level) {
             Level::create(['name' => $level]);
