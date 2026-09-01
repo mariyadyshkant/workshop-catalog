@@ -1,0 +1,11 @@
+[build]
+  base = "workshop-catalog-react"
+  command = "npm run build"
+  publish = "dist"
+
+# SPA fallback: ogni route sconosciuta serve index.html (200, non redirect)
+# così il refresh su /courses/5 funziona invece di dare 404.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
