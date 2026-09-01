@@ -4,7 +4,7 @@ use App\Models\Category;
 use App\Models\User;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 test('un utente non autenticato viene rediretto al login', function () {

@@ -20,10 +20,12 @@ Route::middleware('auth')->group(function () {
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
-    Route::resource('courses', CourseController::class);
-    Route::resource('categories', CategoryController::class);
-    Route::resource('levels', LevelController::class);
-    Route::resource('teachers', TeacherController::class);
+    Route::middleware('admin')->group(function () {
+        Route::resource('courses', CourseController::class);
+        Route::resource('categories', CategoryController::class);
+        Route::resource('levels', LevelController::class);
+        Route::resource('teachers', TeacherController::class);
+    });
 });
 
 require __DIR__ . '/auth.php';

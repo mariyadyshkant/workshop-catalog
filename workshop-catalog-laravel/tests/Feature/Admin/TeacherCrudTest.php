@@ -4,7 +4,7 @@ use App\Models\Teacher;
 use App\Models\User;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 test('la lista insegnanti richiede autenticazione', function () {

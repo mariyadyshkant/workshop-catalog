@@ -4,7 +4,7 @@ use App\Models\Level;
 use App\Models\User;
 
 beforeEach(function () {
-    $this->actingAs(User::factory()->create());
+    $this->actingAs(User::factory()->admin()->create());
 });
 
 test('la lista livelli richiede autenticazione', function () {

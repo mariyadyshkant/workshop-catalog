@@ -22,9 +22,9 @@ class DatabaseSeeder extends Seeder
             CourseSeeder::class,
         ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::factory()->admin()->create([
+            'name' => 'Admin',
+            'email' => 'admin@example.com',
         ]);
     }
 }
