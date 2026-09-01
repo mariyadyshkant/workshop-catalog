@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\LevelRequest;
 use App\Models\Level;
-use Illuminate\Http\Request;
 
 class LevelController extends Controller
 {
@@ -28,12 +28,9 @@ class LevelController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(LevelRequest $request)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255|unique:levels,name',
-        ]);
-        Level::create($validateData);
+        Level::create($request->validated());
         return redirect()->route('levels.index')->with('success', 'Livello creato con successo!');
     }
 
@@ -56,12 +53,9 @@ class LevelController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Level $level)
+    public function update(LevelRequest $request, Level $level)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255|unique:levels,name,' . $level->id,
-        ]);
-        $level->update($validateData);
+        $level->update($request->validated());
         return redirect()->route('levels.index')->with('success', 'Livello aggiornato con successo!');
     }
 

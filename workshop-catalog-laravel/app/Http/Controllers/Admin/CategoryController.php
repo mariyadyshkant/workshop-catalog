@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CategoryRequest;
 use App\Models\Category;
-use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
@@ -28,12 +28,9 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name',
-        ]);
-        Category::create($validateData);
+        Category::create($request->validated());
         return redirect()->route('categories.index')->with('success', 'Categoria creata con successo!');
     }
 
@@ -56,12 +53,9 @@ class CategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Category $category)
+    public function update(CategoryRequest $request, Category $category)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255|unique:categories,name,' . $category->id,
-        ]);
-        $category->update($validateData);
+        $category->update($request->validated());
         return redirect()->route('categories.index')->with('success', 'Categoria aggiornata con successo!');
     }
 

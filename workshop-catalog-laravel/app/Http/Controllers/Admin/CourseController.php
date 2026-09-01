@@ -3,18 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\CourseRequest;
 use App\Models\Course;
 use App\Models\Category;
 use App\Models\Level;
 use App\Models\Teacher;
-use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
 class CourseController extends Controller
 {
-    private const STATUSES = ['In programma', 'In aggiornamento', 'Cancellato'];
-    private const DELIVERY_MODES = ['Online', 'In presenza', 'Misto'];
-
     /**
      * Display a listing of the resource.
      */
@@ -39,23 +35,9 @@ class CourseController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CourseRequest $request)
     {
-        $validateData = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'duration_hours' => 'required|integer|min:1',
-            'requirements' => 'required|string',
-            'status' => ['required', Rule::in(self::STATUSES)],
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after:start_date',
-            'language' => 'required|string|max:50',
-            'delivery_mode' => ['required', Rule::in(self::DELIVERY_MODES)],
-            'image' => 'nullable|image|max:2048',
-            'category_id' => 'required|exists:categories,id',
-            'level_id' => 'required|exists:levels,id',
-            'teacher_id' => 'required|exists:teachers,id',
-        ]);
+        $validateData = $request->validated();
 
         if ($request->hasFile('image')) {
             $validateData['image'] = $request->file('image')->store('courses', 'public');
@@ -88,23 +70,9 @@ class CourseController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Course $course)
+    public function update(CourseRequest $request, Course $course)
     {
-        $validateData = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'duration_hours' => 'required|integer|min:1',
-            'requirements' => 'required|string',
-            'status' => ['required', Rule::in(self::STATUSES)],
-            'start_date' => 'required|date',
-            'end_date' => 'nullable|date|after:start_date',
-            'language' => 'required|string|max:50',
-            'delivery_mode' => ['required', Rule::in(self::DELIVERY_MODES)],
-            'image' => 'nullable|image|max:2048',
-            'category_id' => 'required|exists:categories,id',
-            'level_id' => 'required|exists:levels,id',
-            'teacher_id' => 'required|exists:teachers,id',
-        ]);
+        $validateData = $request->validated();
 
         if ($request->hasFile('image')) {
             $validateData['image'] = $request->file('image')->store('courses', 'public');

@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\TeacherRequest;
 use App\Models\Teacher;
-use Illuminate\Http\Request;
 
 class TeacherController extends Controller
 {
@@ -28,14 +28,9 @@ class TeacherController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(TeacherRequest $request)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
-            'email' => 'required|email|unique:teachers,email',
-        ]);
-        Teacher::create($validateData);
+        Teacher::create($request->validated());
         return redirect()->route('teachers.index')->with('success', 'Insegnante creato con successo!');
     }
 
@@ -58,14 +53,9 @@ class TeacherController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Teacher $teacher)
+    public function update(TeacherRequest $request, Teacher $teacher)
     {
-        $validateData = $request->validate([
-            'name' => 'required|string|max:255',
-            'surname' => 'required|string|max:255',
-            'email' => 'required|email|unique:teachers,email,' . $teacher->id,
-        ]);
-        $teacher->update($validateData);
+        $teacher->update($request->validated());
         return redirect()->route('teachers.index')->with('success', 'Insegnante aggiornato con successo!');
     }
 
