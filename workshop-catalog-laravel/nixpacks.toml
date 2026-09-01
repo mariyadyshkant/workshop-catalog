@@ -1,18 +1,21 @@
 [phases.setup]
-nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_sqlite", "php82Extensions.pdo_mysql", "php82Extensions.pdo_pgsql", "php82Extensions.mbstring", "php82Extensions.tokenizer", "php82Extensions.xml", "php82Extensions.ctype", "php82Extensions.fileinfo", "php82Extensions.sqlite3", "composer"]
+nixPkgs = ["php82", "php82Extensions.pdo", "php82Extensions.pdo_sqlite", "php82Extensions.mbstring", "php82Extensions.tokenizer", "php82Extensions.xml", "php82Extensions.ctype", "php82Extensions.fileinfo", "php82Extensions.sqlite3", "composer"]
 
 [phases.install]
 cmds = ["composer install --no-dev --optimize-autoloader"]
 
 [phases.build]
 cmds = [
-  "php artisan config:cache",
   "php artisan route:cache",
   "php artisan view:cache",
 ]
 
-# migrate + storage:link girano a ogni avvio (idempotenti), NON in build:
-# in build il DB può non essere ancora raggiungibile.
-# NB: niente key:generate e niente --seed qui — vedi PROGRESS.md.
+# A ogni avvio (comandi idempotenti):
+# - config:cache qui e non in build, così legge le env var di Railway a runtime
+# - migrate --force applica solo le migration nuove; crea database.sqlite se manca.
+#   Il file DEVE stare sul volume persistente Railway (vedi DB_DATABASE in PROGRESS.md),
+#   altrimenti i dati si azzerano a ogni deploy.
+# - storage:link ricrea il symlink public/storage
+# NB: niente key:generate, niente --seed.
 [start]
-cmd = "php artisan migrate --force && php artisan storage:link --force && php artisan serve --host=0.0.0.0 --port=$PORT"
+cmd = "php artisan config:cache && php artisan migrate --force && php artisan storage:link --force && php artisan serve --host=0.0.0.0 --port=$PORT"
