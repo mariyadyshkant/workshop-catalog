@@ -6,38 +6,54 @@ const API = import.meta.env.VITE_API_URL
 
 export function CoursesList() {
     const [courses, setCourses] = useState([])
+    const [meta, setMeta] = useState(null)
     const [categories, setCategories] = useState([])
     const [levels, setLevels] = useState([])
     const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
 
     const [search, setSearch] = useState('')
     const [categoryId, setCategoryId] = useState('')
     const [levelId, setLevelId] = useState('')
     const [deliveryMode, setDeliveryMode] = useState('')
+    const [page, setPage] = useState(1)
+    const [retryCount, setRetryCount] = useState(0)
 
     useEffect(() => {
         Promise.all([
             axios.get(`${API}/categories`),
             axios.get(`${API}/levels`),
         ]).then(([catRes, levRes]) => {
-            setCategories(catRes.data)
-            setLevels(levRes.data)
+            setCategories(catRes.data.data)
+            setLevels(levRes.data.data)
         })
     }, [])
 
+    // Torna alla prima pagina ogni volta che cambia un filtro
+    useEffect(() => {
+        setPage(1)
+    }, [search, categoryId, levelId, deliveryMode])
+
     useEffect(() => {
         setLoading(true)
-        const params = {}
+        setError(false)
+        const params = { page }
         if (search) params.search = search
         if (categoryId) params.category_id = categoryId
         if (levelId) params.level_id = levelId
         if (deliveryMode) params.delivery_mode = deliveryMode
 
         axios.get(`${API}/courses`, { params })
-            .then(response => setCourses(response.data))
-            .catch(error => console.error(error))
+            .then(response => {
+                setCourses(response.data.data)
+                setMeta(response.data.meta)
+            })
+            .catch(error => {
+                console.error(error)
+                setError(true)
+            })
             .finally(() => setLoading(false))
-    }, [search, categoryId, levelId, deliveryMode])
+    }, [search, categoryId, levelId, deliveryMode, page, retryCount])
 
     const hasFilters = search || categoryId || levelId || deliveryMode
 
@@ -55,8 +71,8 @@ export function CoursesList() {
                 <div className="container py-5">
                     <h1 className="hero-title">Scopri il tuo prossimo workshop</h1>
                     <p className="hero-subtitle">
-                        {courses.length > 0 && !loading
-                            ? `${courses.length} corsi disponibili — trova quello che fa per te`
+                        {meta?.total > 0 && !loading
+                            ? `${meta.total} corsi disponibili — trova quello che fa per te`
                             : 'Esplora il catalogo completo dei workshop disponibili'}
                     </p>
 
@@ -126,6 +142,15 @@ export function CoursesList() {
                         <div className="spinner-border text-primary" role="status" />
                         <p className="mt-3 text-muted">Caricamento corsi...</p>
                     </div>
+                ) : error ? (
+                    <div className="empty-state">
+                        <p className="empty-icon">⚠️</p>
+                        <h5>Impossibile caricare i corsi</h5>
+                        <p className="text-muted">Controlla la connessione o riprova tra poco.</p>
+                        <button className="btn btn-outline-primary btn-sm mt-2" onClick={() => setRetryCount(c => c + 1)}>
+                            Riprova
+                        </button>
+                    </div>
                 ) : courses.length === 0 ? (
                     <div className="empty-state">
                         <p className="empty-icon">🔎</p>
@@ -138,13 +163,37 @@ export function CoursesList() {
                         )}
                     </div>
                 ) : (
-                    <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                        {courses.map(course => (
-                            <div className="col" key={course.id}>
-                                <CourseCard course={course} />
+                    <>
+                        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                            {courses.map(course => (
+                                <div className="col" key={course.id}>
+                                    <CourseCard course={course} />
+                                </div>
+                            ))}
+                        </div>
+
+                        {meta && meta.last_page > 1 && (
+                            <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
+                                <button
+                                    className="btn btn-outline-secondary btn-sm"
+                                    disabled={meta.current_page <= 1}
+                                    onClick={() => setPage(p => p - 1)}
+                                >
+                                    ← Precedente
+                                </button>
+                                <span className="text-muted small">
+                                    Pagina {meta.current_page} di {meta.last_page}
+                                </span>
+                                <button
+                                    className="btn btn-outline-secondary btn-sm"
+                                    disabled={meta.current_page >= meta.last_page}
+                                    onClick={() => setPage(p => p + 1)}
+                                >
+                                    Successiva →
+                                </button>
                             </div>
-                        ))}
-                    </div>
+                        )}
+                    </>
                 )}
             </div>
         </>

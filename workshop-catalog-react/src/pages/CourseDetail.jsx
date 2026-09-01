@@ -5,13 +5,18 @@ import axios from 'axios'
 export function CourseDetail() {
     const { id } = useParams()
     const [course, setCourse] = useState(null)
+    const [error, setError] = useState(false)
 
     useEffect(() => {
         axios.get(`${import.meta.env.VITE_API_URL}/courses/${id}`)
-            .then(response => setCourse(response.data))
-            .catch(error => console.error(error))
+            .then(response => setCourse(response.data.data))
+            .catch(error => {
+                console.error(error)
+                setError(true)
+            })
     }, [id])
 
+    if (error) return <p>Corso non trovato o errore di caricamento.</p>
     if (!course) return <p>Caricamento...</p>
 
     return (
