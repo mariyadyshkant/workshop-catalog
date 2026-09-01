@@ -8,15 +8,19 @@ use App\Models\Category;
 use App\Models\Level;
 use App\Models\Teacher;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class CourseController extends Controller
 {
+    private const STATUSES = ['In programma', 'In aggiornamento', 'Cancellato'];
+    private const DELIVERY_MODES = ['Online', 'In presenza', 'Misto'];
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $courses = Course::all();
+        $courses = Course::with(['category', 'level', 'teacher'])->get();
         return view('admin.courses.index', compact('courses'));
     }
 
@@ -42,11 +46,11 @@ class CourseController extends Controller
             'description' => 'required|string',
             'duration_hours' => 'required|integer|min:1',
             'requirements' => 'required|string',
-            'status' => 'required|string',
+            'status' => ['required', Rule::in(self::STATUSES)],
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after:start_date',
             'language' => 'required|string|max:50',
-            'delivery_mode' => 'required|string|max:20',
+            'delivery_mode' => ['required', Rule::in(self::DELIVERY_MODES)],
             'image' => 'nullable|image|max:2048',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',
@@ -91,11 +95,11 @@ class CourseController extends Controller
             'description' => 'required|string',
             'duration_hours' => 'required|integer|min:1',
             'requirements' => 'required|string',
-            'status' => 'required|string',
+            'status' => ['required', Rule::in(self::STATUSES)],
             'start_date' => 'required|date',
             'end_date' => 'nullable|date|after:start_date',
             'language' => 'required|string|max:50',
-            'delivery_mode' => 'required|string|max:20',
+            'delivery_mode' => ['required', Rule::in(self::DELIVERY_MODES)],
             'image' => 'nullable|image|max:2048',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',

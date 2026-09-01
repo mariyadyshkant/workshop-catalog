@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\CourseResource;
 use App\Models\Course;
 
 class CourseController extends Controller
@@ -32,11 +33,11 @@ class CourseController extends Controller
             $query->where('delivery_mode', $request->delivery_mode);
         }
 
-        return response()->json($query->get());
+        return CourseResource::collection($query->paginate(12)->withQueryString());
     }
     public function show(Course $course)
     {
         $course->load(['category', 'level', 'teacher']);
-        return response()->json($course);  
+        return new CourseResource($course);
     }
 }

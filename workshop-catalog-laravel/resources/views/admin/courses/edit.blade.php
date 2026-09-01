@@ -40,8 +40,11 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Stato</label>
-                        <input type="text" name="status" class="form-control"
-                            value="{{ old('status', $course->status) }}">
+                        <select name="status" class="form-select">
+                            @foreach (['In programma', 'In aggiornamento', 'Cancellato'] as $option)
+                                <option value="{{ $option }}" @selected(old('status', $course->status) === $option)>{{ $option }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
 
@@ -71,8 +74,11 @@
                     </div>
                     <div class="col-md-6 mb-3">
                         <label class="form-label">Modalità</label>
-                        <input type="text" name="delivery_mode" class="form-control"
-                            value="{{ old('delivery_mode', $course->delivery_mode) }}">
+                        <select name="delivery_mode" class="form-select">
+                            @foreach (['Online', 'In presenza', 'Misto'] as $option)
+                                <option value="{{ $option }}" @selected(old('delivery_mode', $course->delivery_mode) === $option)>{{ $option }}</option>
+                            @endforeach
+                        </select>
                     </div>
                 </div>
                 <div class="mb-3">
