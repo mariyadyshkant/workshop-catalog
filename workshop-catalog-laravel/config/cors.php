@@ -19,7 +19,10 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['*'],
+    // In produzione impostare CORS_ALLOWED_ORIGINS con l'URL del frontend
+    // (es. "https://corsorama.netlify.app"), più valori separati da virgola.
+    // Senza la variabile resta '*', comodo in sviluppo locale.
+    'allowed_origins' => array_map('trim', explode(',', env('CORS_ALLOWED_ORIGINS', '*'))),
 
     'allowed_origins_patterns' => [],
 
