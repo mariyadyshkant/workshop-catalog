@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { imageUrl } from '../lib/api'
 
 const STATUS_STYLES = {
     'In programma':   { bg: '#e8f5e9', color: '#2e7d32' },
@@ -19,7 +20,7 @@ export function CourseCard({ course }) {
         <div className="course-card h-100">
             {course.image ? (
                 <img
-                    src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${course.image}`}
+                    src={imageUrl(course.image)}
                     className="course-card-img"
                     alt={course.title}
                 />

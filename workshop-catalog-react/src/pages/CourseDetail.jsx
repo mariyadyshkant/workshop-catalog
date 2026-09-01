@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import axios from 'axios'
+import { api, imageUrl } from '../lib/api'
 
 export function CourseDetail() {
     const { id } = useParams()
@@ -8,7 +8,7 @@ export function CourseDetail() {
     const [error, setError] = useState(false)
 
     useEffect(() => {
-        axios.get(`${import.meta.env.VITE_API_URL}/courses/${id}`)
+        api.get(`/courses/${id}`)
             .then(response => setCourse(response.data.data))
             .catch(error => {
                 console.error(error)
@@ -33,7 +33,7 @@ export function CourseDetail() {
             {/* Immagine */}
             {course.image ? (
                 <img
-                    src={`${import.meta.env.VITE_API_URL.replace('/api', '')}/storage/${course.image}`}
+                    src={imageUrl(course.image)}
                     alt={course.title}
                     className="w-100 rounded-4 mb-4"
                     style={{ maxHeight: '350px', objectFit: 'cover' }}

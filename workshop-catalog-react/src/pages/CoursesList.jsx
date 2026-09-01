@@ -1,8 +1,6 @@
 import { useState, useEffect } from 'react'
 import { CourseCard } from '../components/CourseCard'
-import axios from 'axios'
-
-const API = import.meta.env.VITE_API_URL
+import { api } from '../lib/api'
 
 export function CoursesList() {
     const [courses, setCourses] = useState([])
@@ -13,6 +11,7 @@ export function CoursesList() {
     const [error, setError] = useState(false)
 
     const [search, setSearch] = useState('')
+    const [debouncedSearch, setDebouncedSearch] = useState('')
     const [categoryId, setCategoryId] = useState('')
     const [levelId, setLevelId] = useState('')
     const [deliveryMode, setDeliveryMode] = useState('')
@@ -21,29 +20,35 @@ export function CoursesList() {
 
     useEffect(() => {
         Promise.all([
-            axios.get(`${API}/categories`),
-            axios.get(`${API}/levels`),
+            api.get('/categories'),
+            api.get('/levels'),
         ]).then(([catRes, levRes]) => {
             setCategories(catRes.data.data)
             setLevels(levRes.data.data)
         })
     }, [])
 
+    // Aspetta che l'utente smetta di digitare prima di cercare
+    useEffect(() => {
+        const t = setTimeout(() => setDebouncedSearch(search), 350)
+        return () => clearTimeout(t)
+    }, [search])
+
     // Torna alla prima pagina ogni volta che cambia un filtro
     useEffect(() => {
         setPage(1)
-    }, [search, categoryId, levelId, deliveryMode])
+    }, [debouncedSearch, categoryId, levelId, deliveryMode])
 
     useEffect(() => {
         setLoading(true)
         setError(false)
         const params = { page }
-        if (search) params.search = search
+        if (debouncedSearch) params.search = debouncedSearch
         if (categoryId) params.category_id = categoryId
         if (levelId) params.level_id = levelId
         if (deliveryMode) params.delivery_mode = deliveryMode
 
-        axios.get(`${API}/courses`, { params })
+        api.get('/courses', { params })
             .then(response => {
                 setCourses(response.data.data)
                 setMeta(response.data.meta)
@@ -53,7 +58,7 @@ export function CoursesList() {
                 setError(true)
             })
             .finally(() => setLoading(false))
-    }, [search, categoryId, levelId, deliveryMode, page, retryCount])
+    }, [debouncedSearch, categoryId, levelId, deliveryMode, page, retryCount])
 
     const hasFilters = search || categoryId || levelId || deliveryMode
 
