@@ -241,6 +241,76 @@ body {
   color: white;
 }
 
+/* ── Home: hero con gradiente + blob ── */
+.home-hero {
+  position: relative;
+  overflow: hidden;
+  color: #fff;
+  padding: 3rem 0 2.5rem;
+  /* navy della navbar che vira verso un ambra caldo nell'angolo in basso a destra */
+  background: linear-gradient(135deg,
+    #1a1a2e 0%,
+    #16213e 52%,
+    #33314b 76%,
+    #7a5228 118%);
+}
+
+.home-hero > .container {
+  position: relative;
+  z-index: 1;
+}
+
+/* il titolo della home è più lungo di quello del catalogo: scala meglio sul mobile */
+.home-hero .hero-title {
+  font-size: clamp(1.5rem, 6vw, 2.8rem);
+}
+
+.hero-blob {
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  filter: blur(80px);
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ambra: alto-destra, sfora il bordo superiore */
+.hero-blob-1 {
+  width: 440px;
+  height: 440px;
+  top: -160px;
+  right: -110px;
+  background: #e8a94c;
+  opacity: 0.18;
+}
+
+/* navy chiaro: basso-sinistra, sfora due bordi */
+.hero-blob-2 {
+  width: 360px;
+  height: 360px;
+  bottom: -180px;
+  left: -90px;
+  background: #3a4a7a;
+  opacity: 0.24;
+}
+
+/* ambra tenue: al centro, tutto interno, per profondità */
+.hero-blob-3 {
+  width: 260px;
+  height: 260px;
+  top: 30px;
+  left: 42%;
+  background: #e8a94c;
+  opacity: 0.10;
+}
+
+@media (max-width: 768px) {
+  .hero-blob { filter: blur(55px); }
+  .hero-blob-1 { width: 300px; height: 300px; top: -120px; right: -90px; }
+  .hero-blob-2 { width: 260px; height: 260px; bottom: -140px; left: -80px; }
+  .hero-blob-3 { display: none; }
+}
+
 /* ── Home: categorie ── */
 .category-pill {
   padding: 0.55rem 1.1rem;

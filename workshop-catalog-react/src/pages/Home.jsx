@@ -20,7 +20,11 @@ export function Home() {
     return (
         <>
             {/* Hero */}
-            <div className="hero-section">
+            <div className="home-hero">
+                {/* blob decorativi sfocati — elementi separati per poterli animare in seguito */}
+                <div className="hero-blob hero-blob-1" aria-hidden="true" />
+                <div className="hero-blob hero-blob-2" aria-hidden="true" />
+                <div className="hero-blob hero-blob-3" aria-hidden="true" />
                 <div className="container py-5 text-center">
                     <h1 className="hero-title">Impara qualcosa di nuovo con Corsorama</h1>
                     <p className="hero-subtitle mx-auto" style={{ maxWidth: '620px' }}>
