@@ -90,7 +90,11 @@ export function Home() {
                     ) : (
                         <div className="d-flex flex-wrap gap-2">
                             {categories.map(c => (
-                                <Link key={c.id} to="/courses" className="category-pill">
+                                <Link
+                                    key={c.id}
+                                    to={`/courses?category_id=${c.id}`}
+                                    className="category-pill"
+                                >
                                     {c.name}
                                 </Link>
                             ))}

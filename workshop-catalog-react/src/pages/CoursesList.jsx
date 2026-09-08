@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { CourseCard } from '../components/CourseCard'
 import { api } from '../lib/api'
 
@@ -12,11 +13,23 @@ export function CoursesList() {
 
     const [search, setSearch] = useState('')
     const [debouncedSearch, setDebouncedSearch] = useState('')
-    const [categoryId, setCategoryId] = useState('')
+    // il filtro categoria vive nella querystring (?category_id=…): così è
+    // deep-linkabile dalla home e condivisibile
+    const [searchParams, setSearchParams] = useSearchParams()
+    const categoryId = searchParams.get('category_id') || ''
     const [levelId, setLevelId] = useState('')
     const [deliveryMode, setDeliveryMode] = useState('')
     const [page, setPage] = useState(1)
     const [retryCount, setRetryCount] = useState(0)
+
+    function setCategoryId(value) {
+        setSearchParams(prev => {
+            const next = new URLSearchParams(prev)
+            if (value) next.set('category_id', value)
+            else next.delete('category_id')
+            return next
+        }, { replace: true })
+    }
 
     useEffect(() => {
         Promise.all([
