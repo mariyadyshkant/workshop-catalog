@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { Signal, Clock, Globe, MonitorPlay, Calendar, CalendarCheck, CircleDot } from 'lucide-react'
 import { api, imageUrl } from '../lib/api'
 
 export function CourseDetail() {
@@ -32,6 +33,18 @@ export function CourseDetail() {
             </div>
         )
     }
+
+    const info = [
+        { icon: Signal, label: 'Livello', value: course.level?.name },
+        { icon: Clock, label: 'Durata', value: `${course.duration_hours} ore` },
+        { icon: Globe, label: 'Lingua', value: course.language },
+        { icon: MonitorPlay, label: 'Modalità', value: course.delivery_mode },
+        { icon: Calendar, label: 'Inizio', value: course.start_date },
+        ...(course.end_date ? [{ icon: CalendarCheck, label: 'Fine', value: course.end_date }] : []),
+        { icon: CircleDot, label: 'Stato', value: course.status },
+    ]
+
+    const teacherInitial = (course.teacher?.name || '?').trim().charAt(0).toUpperCase()
 
     return (
         <div className="container py-4 py-md-5">
@@ -67,56 +80,42 @@ export function CourseDetail() {
                 )}
 
                 {/* Info rapide */}
-                <div className="card border-0 shadow-sm rounded-4 mb-4">
+                <div className="card border-0 rounded-4 mb-4 detail-info-card">
                     <div className="card-body p-4">
-                        <div className="row g-3">
-                            <div className="col-6 col-md-3">
-                                <small className="text-muted text-uppercase fw-bold d-block">Livello</small>
-                                <span className="fw-semibold">{course.level?.name}</span>
-                            </div>
-                            <div className="col-6 col-md-3">
-                                <small className="text-muted text-uppercase fw-bold d-block">Durata</small>
-                                <span className="fw-semibold">{course.duration_hours} ore</span>
-                            </div>
-                            <div className="col-6 col-md-3">
-                                <small className="text-muted text-uppercase fw-bold d-block">Lingua</small>
-                                <span className="fw-semibold">{course.language}</span>
-                            </div>
-                            <div className="col-6 col-md-3">
-                                <small className="text-muted text-uppercase fw-bold d-block">Modalità</small>
-                                <span className="fw-semibold">{course.delivery_mode}</span>
-                            </div>
-                            <div className="col-6 col-md-3">
-                                <small className="text-muted text-uppercase fw-bold d-block">Inizio</small>
-                                <span className="fw-semibold">{course.start_date}</span>
-                            </div>
-                            {course.end_date && (
-                                <div className="col-6 col-md-3">
-                                    <small className="text-muted text-uppercase fw-bold d-block">Fine</small>
-                                    <span className="fw-semibold">{course.end_date}</span>
+                        <div className="row g-4">
+                            {info.map(({ icon: Icon, label, value }) => (
+                                <div className="col-6 col-md-3" key={label}>
+                                    <div className="detail-label">
+                                        <Icon size={14} strokeWidth={2.5} />
+                                        <span>{label}</span>
+                                    </div>
+                                    <span className="fw-semibold">{value}</span>
                                 </div>
-                            )}
-                            <div className="col-6 col-md-3">
-                                <small className="text-muted text-uppercase fw-bold d-block">Stato</small>
-                                <span className="fw-semibold">{course.status}</span>
-                            </div>
+                            ))}
                         </div>
                     </div>
                 </div>
 
                 {/* Descrizione */}
-                <h2 className="h5 fw-bold border-bottom pb-2 mb-3">Descrizione</h2>
+                <h2 className="detail-section-title h5 fw-bold">Descrizione</h2>
                 <p className="mb-4">{course.description}</p>
 
                 {/* Requisiti */}
-                <h2 className="h5 fw-bold border-bottom pb-2 mb-3">Requisiti</h2>
+                <h2 className="detail-section-title h5 fw-bold">Requisiti</h2>
                 <p className="mb-4">{course.requirements}</p>
 
                 {/* Docente */}
-                <h2 className="h5 fw-bold border-bottom pb-2 mb-3">Docente</h2>
-                <p className="fw-bold mb-1">{course.teacher?.name} {course.teacher?.surname}</p>
-                {course.teacher?.email && <p className="text-muted small mb-1">{course.teacher?.email}</p>}
-                {course.teacher?.bio && <p className="mb-0">{course.teacher?.bio}</p>}
+                <h2 className="detail-section-title h5 fw-bold">Docente</h2>
+                <div className="d-flex align-items-center gap-3">
+                    <div className="teacher-avatar">{teacherInitial}</div>
+                    <div>
+                        <p className="fw-bold mb-0">{course.teacher?.name} {course.teacher?.surname}</p>
+                        {course.teacher?.email && (
+                            <p className="text-muted small mb-0">{course.teacher.email}</p>
+                        )}
+                    </div>
+                </div>
+                {course.teacher?.bio && <p className="mt-3 mb-0">{course.teacher.bio}</p>}
             </div>
         </div>
     )

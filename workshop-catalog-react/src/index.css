@@ -1,3 +1,8 @@
+:root {
+  /* oro/ambra coerente con l'accento dell'hero, scurito quanto basta per il testo su bianco */
+  --accent-gold: #b8860b;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -349,4 +354,53 @@ img {
 .footer-corsorama {
   background: #1a1a2e;
   color: rgba(255,255,255,0.85);
+}
+
+/* ── CourseDetail ── */
+.detail-info-card {
+  box-shadow: 0 6px 24px rgba(26, 26, 46, 0.08);
+  border: 1px solid rgba(26, 26, 46, 0.05);
+}
+
+.detail-label {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--accent-gold);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.15rem;
+}
+
+.detail-section-title {
+  position: relative;
+  padding-bottom: 0.7rem;
+  margin-bottom: 1rem;
+}
+.detail-section-title::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 44px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--accent-gold);
+}
+
+.teacher-avatar {
+  flex-shrink: 0;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.05rem;
+  box-shadow: 0 0 0 2px rgba(184, 134, 11, 0.4);
 }
