@@ -151,11 +151,7 @@ body {
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s, box-shadow 0.2s;
-}
-.course-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 8px 28px rgba(0,0,0,0.12);
+  /* lift + ombra su hover gestiti da Motion (whileHover) in CourseCard.jsx */
 }
 
 .course-card-img {
@@ -247,12 +243,13 @@ body {
   overflow: hidden;
   color: #fff;
   padding: 3rem 0 2.5rem;
-  /* navy della navbar che vira verso un ambra caldo nell'angolo in basso a destra */
+  /* navy della navbar con un leggero schiarimento verso il basso;
+     il calore lo danno i blob ambra sopra */
   background: linear-gradient(135deg,
     #1a1a2e 0%,
-    #16213e 52%,
-    #33314b 76%,
-    #7a5228 118%);
+    #16213e 55%,
+    #24263f 82%,
+    #322c48 100%);
 }
 
 .home-hero > .container {
@@ -269,45 +266,45 @@ body {
   position: absolute;
   z-index: 0;
   border-radius: 50%;
-  filter: blur(80px);
+  filter: blur(64px);
   pointer-events: none;
   will-change: transform;
 }
 
-/* ambra: alto-destra, sfora il bordo superiore */
+/* ambra caldo: alto-sinistra, sfora il bordo superiore */
 .hero-blob-1 {
   width: 440px;
   height: 440px;
   top: -160px;
-  right: -110px;
-  background: #e8a94c;
-  opacity: 0.18;
+  left: 3%;
+  background: #f0ad4e;
+  opacity: 0.30;
 }
 
-/* navy chiaro: basso-sinistra, sfora due bordi */
+/* periwinkle (navy chiaro): basso-sinistra, sfora due bordi */
 .hero-blob-2 {
-  width: 360px;
-  height: 360px;
-  bottom: -180px;
-  left: -90px;
-  background: #3a4a7a;
-  opacity: 0.24;
+  width: 400px;
+  height: 400px;
+  bottom: -170px;
+  left: -80px;
+  background: #5a6fd8;
+  opacity: 0.38;
 }
 
-/* ambra tenue: al centro, tutto interno, per profondità */
+/* ambra: destra, sfora appena il bordo destro */
 .hero-blob-3 {
-  width: 260px;
-  height: 260px;
-  top: 30px;
-  left: 42%;
-  background: #e8a94c;
-  opacity: 0.10;
+  width: 380px;
+  height: 380px;
+  top: 0;
+  right: -50px;
+  background: #f0ad4e;
+  opacity: 0.34;
 }
 
 @media (max-width: 768px) {
-  .hero-blob { filter: blur(55px); }
-  .hero-blob-1 { width: 300px; height: 300px; top: -120px; right: -90px; }
-  .hero-blob-2 { width: 260px; height: 260px; bottom: -140px; left: -80px; }
+  .hero-blob { filter: blur(45px); }
+  .hero-blob-1 { width: 300px; height: 300px; top: -110px; left: -60px; }
+  .hero-blob-2 { width: 280px; height: 280px; bottom: -130px; left: -80px; }
   .hero-blob-3 { display: none; }
 }
 

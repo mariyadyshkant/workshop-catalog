@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { motion } from 'motion/react'
 import { imageUrl } from '../lib/api'
 
 const STATUS_STYLES = {
@@ -17,7 +18,11 @@ export function CourseCard({ course }) {
     const statusStyle = STATUS_STYLES[course.status] || { bg: '#f0f0f0', color: '#555' }
 
     return (
-        <div className="course-card h-100">
+        <motion.div
+            className="course-card h-100"
+            whileHover={{ y: -6, boxShadow: '0 14px 34px rgba(0, 0, 0, 0.14)' }}
+            transition={{ duration: 0.25, ease: 'easeOut' }}
+        >
             {course.image ? (
                 <img
                     src={imageUrl(course.image)}
@@ -56,7 +61,7 @@ export function CourseCard({ course }) {
                     Scopri →
                 </Link>
             </div>
-        </div>
+        </motion.div>
     )
 }
 

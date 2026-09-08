@@ -1,11 +1,30 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
+import { motion, useReducedMotion } from 'motion/react'
 import { CourseCard } from '../components/CourseCard'
 import { api } from '../lib/api'
+
+// Fade-in + slide-up staggerato per il contenuto dell'hero (titolo, poi sottotitolo, poi bottone)
+const heroContainer = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.12, delayChildren: 0.05 } },
+}
+const heroItem = {
+    hidden: { opacity: 0, y: 16 },
+    show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: 'easeOut' } },
+}
+
+// Movimento lento e continuo dei blob di sfondo (loop, sobrio ma percettibile)
+const blobs = [
+    { cls: 'hero-blob-1', anim: { x: [0, 60, 0], y: [0, 40, 0], scale: [1, 1.12, 1] }, duration: 16 },
+    { cls: 'hero-blob-2', anim: { x: [0, -52, 0], y: [0, -44, 0], scale: [1, 1.15, 1] }, duration: 20 },
+    { cls: 'hero-blob-3', anim: { x: [0, -75, 0], y: [0, 46, 0], scale: [1, 1.16, 1] }, duration: 13 },
+]
 
 export function Home() {
     const [categories, setCategories] = useState([])
     const [featured, setFeatured] = useState([])
+    const reduceMotion = useReducedMotion()
 
     useEffect(() => {
         api.get('/categories')
@@ -21,24 +40,45 @@ export function Home() {
         <>
             {/* Hero */}
             <div className="home-hero">
-                {/* blob decorativi sfocati — elementi separati per poterli animare in seguito */}
-                <div className="hero-blob hero-blob-1" aria-hidden="true" />
-                <div className="hero-blob hero-blob-2" aria-hidden="true" />
-                <div className="hero-blob hero-blob-3" aria-hidden="true" />
-                <div className="container py-5 text-center">
-                    <h1 className="hero-title">Impara qualcosa di nuovo con Corsorama</h1>
-                    <p className="hero-subtitle mx-auto" style={{ maxWidth: '620px' }}>
+                {/* blob decorativi sfocati — elementi separati, in movimento lento e continuo */}
+                {blobs.map(b => (
+                    <motion.div
+                        key={b.cls}
+                        className={`hero-blob ${b.cls}`}
+                        aria-hidden="true"
+                        animate={reduceMotion ? undefined : b.anim}
+                        transition={reduceMotion ? undefined : {
+                            duration: b.duration,
+                            repeat: Infinity,
+                            repeatType: 'mirror',
+                            ease: 'easeInOut',
+                        }}
+                    />
+                ))}
+
+                <motion.div
+                    className="container py-5 text-center"
+                    variants={heroContainer}
+                    initial={reduceMotion ? false : 'hidden'}
+                    animate="show"
+                >
+                    <motion.h1 className="hero-title" variants={heroItem}>
+                        Impara qualcosa di nuovo con Corsorama
+                    </motion.h1>
+                    <motion.p className="hero-subtitle mx-auto" style={{ maxWidth: '620px' }} variants={heroItem}>
                         Workshop pratici tenuti da professionisti: programmazione, fotografia,
                         cucina, arte e molto altro. Trova il corso giusto per te.
-                    </p>
-                    <Link
-                        to="/courses"
-                        className="btn-card-detail d-inline-block mt-4"
-                        style={{ padding: '0.6rem 1.6rem' }}
-                    >
-                        Esplora il catalogo →
-                    </Link>
-                </div>
+                    </motion.p>
+                    <motion.div className="mt-4" variants={heroItem}>
+                        <Link
+                            to="/courses"
+                            className="btn-card-detail d-inline-block"
+                            style={{ padding: '0.6rem 1.6rem' }}
+                        >
+                            Esplora il catalogo →
+                        </Link>
+                    </motion.div>
+                </motion.div>
             </div>
 
             <div className="container py-5">
