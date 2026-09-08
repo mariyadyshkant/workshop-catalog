@@ -11,7 +11,10 @@ export function DefaultLayout() {
                     </Link>
                     <ul className="navbar-nav ms-auto">
                         <li className="nav-item">
-                            <Link className="nav-link nav-link-light" to="/">Catalogo</Link>
+                            <Link className="nav-link nav-link-light" to="/">Home</Link>
+                        </li>
+                        <li className="nav-item">
+                            <Link className="nav-link nav-link-light" to="/courses">Catalogo</Link>
                         </li>
                     </ul>
                 </div>
