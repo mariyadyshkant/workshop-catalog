@@ -16,6 +16,12 @@ class CourseSeeder extends Seeder
         $levels = Level::all();
         $teachers = Teacher::all();
 
+        // Le immagini reali stanno in storage/app/public/courses/seed/.
+        // Il campo `image` contiene il path relativo al disco `public`, esattamente
+        // come lo salva l'upload da backoffice (`->store('courses', 'public')`);
+        // il frontend lo trasforma in URL con imageUrl() -> `${host}/storage/${image}`.
+        $img = fn (string $file) => "courses/seed/{$file}";
+
         $courses = [
             [
                 'title' => 'Laravel per Principianti',
@@ -29,7 +35,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'Online',
                 'category' => 'Programmazione',
                 'level' => 'Principiante',
-                'teacher_email' => 'luca.bianchi@example.com'
+                'teacher_email' => 'luca.bianchi@example.com',
+                'image' => $img('laravel-basics.jpg'),
             ],
             [
                 'title' => 'React & TypeScript: da zero a pro',
@@ -43,7 +50,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'Online',
                 'category' => 'Programmazione',
                 'level' => 'Intermedio',
-                'teacher_email' => 'luca.bianchi@example.com'
+                'teacher_email' => 'luca.bianchi@example.com',
+                'image' => $img('react-typescript.jpg'),
             ],
             [
                 'title' => 'Fotografia Urbana Avanzata',
@@ -57,7 +65,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Fotografia',
                 'level' => 'Avanzato',
-                'teacher_email' => 'giulia.rossi@example.com'
+                'teacher_email' => 'giulia.rossi@example.com',
+                'image' => $img('urban-photography.jpg'),
             ],
             [
                 'title' => 'Fotografia con lo Smartphone',
@@ -71,7 +80,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Fotografia',
                 'level' => 'Principiante',
-                'teacher_email' => 'giulia.rossi@example.com'
+                'teacher_email' => 'giulia.rossi@example.com',
+                'image' => $img('smartphone-photography.jpg'),
             ],
             [
                 'title' => 'Gestione del Tempo e Produttività',
@@ -85,7 +95,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'Misto',
                 'category' => 'Produttività',
                 'level' => 'Principiante',
-                'teacher_email' => 'marco.verdi@example.com'
+                'teacher_email' => 'marco.verdi@example.com',
+                'image' => $img('time-management-productivity.jpg'),
             ],
             [
                 'title' => 'Note-Taking Avanzato con Obsidian',
@@ -99,7 +110,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'Online',
                 'category' => 'Produttività',
                 'level' => 'Intermedio',
-                'teacher_email' => 'marco.verdi@example.com'
+                'teacher_email' => 'marco.verdi@example.com',
+                'image' => $img('obsidian-note-taking.jpg'),
             ],
             [
                 'title' => 'Cucina Italiana Tradizionale',
@@ -113,7 +125,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Cucina',
                 'level' => 'Principiante',
-                'teacher_email' => 'sara.neri@example.com'
+                'teacher_email' => 'sara.neri@example.com',
+                'image' => $img('italian-traditional-food.jpg'),
             ],
             [
                 'title' => 'Lievito Madre e Pane Artigianale',
@@ -127,7 +140,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Cucina',
                 'level' => 'Intermedio',
-                'teacher_email' => 'sara.neri@example.com'
+                'teacher_email' => 'sara.neri@example.com',
+                'image' => $img('artisan-bread.jpg'),
             ],
             [
                 'title' => 'Giardinaggio Sostenibile',
@@ -141,7 +155,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Giardinaggio',
                 'level' => 'Principiante',
-                'teacher_email' => 'alessandro.russo@example.com'
+                'teacher_email' => 'alessandro.russo@example.com',
+                'image' => $img('sustainable-gardening.jpg'),
             ],
             [
                 'title' => 'Bonsai: l\'Arte della Miniaturizzazione',
@@ -155,7 +170,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Giardinaggio',
                 'level' => 'Principiante',
-                'teacher_email' => 'alessandro.russo@example.com'
+                'teacher_email' => 'alessandro.russo@example.com',
+                'image' => $img('bonsai-miniaturization.jpg'),
             ],
             [
                 'title' => 'Acquerello per Principianti',
@@ -169,7 +185,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Arte e Disegno',
                 'level' => 'Principiante',
-                'teacher_email' => 'elena.ferrari@example.com'
+                'teacher_email' => 'elena.ferrari@example.com',
+                'image' => $img('watercolor-beginner.jpg'),
             ],
             [
                 'title' => 'Illustrazione Digitale con Procreate',
@@ -183,7 +200,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'Online',
                 'category' => 'Arte e Disegno',
                 'level' => 'Intermedio',
-                'teacher_email' => 'elena.ferrari@example.com'
+                'teacher_email' => 'elena.ferrari@example.com',
+                'image' => $img('digital-illustration.jpg'),
             ],
             [
                 'title' => 'Riparazioni Domestiche di Base',
@@ -197,7 +215,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Fai Da Te',
                 'level' => 'Principiante',
-                'teacher_email' => 'luca.bianchi@example.com'
+                'teacher_email' => 'luca.bianchi@example.com',
+                'image' => $img('home-repairs.jpg'),
             ],
             [
                 'title' => 'Teatro: Improvvisazione e Presenza Scenica',
@@ -211,7 +230,8 @@ class CourseSeeder extends Seeder
                 'delivery_mode' => 'In presenza',
                 'category' => 'Teatro',
                 'level' => 'Principiante',
-                'teacher_email' => 'giulia.rossi@example.com'
+                'teacher_email' => 'giulia.rossi@example.com',
+                'image' => $img('theater-improv.jpg'),
             ],
         ];
 
@@ -226,6 +246,7 @@ class CourseSeeder extends Seeder
                 'end_date' => $course['end_date'],
                 'language' => $course['language'],
                 'delivery_mode' => $course['delivery_mode'],
+                'image' => $course['image'],
                 'category_id' => $categories->where('name', $course['category'])->first()->id,
                 'level_id' => $levels->where('name', $course['level'])->first()->id,
                 'teacher_id' => $teachers->where('email', $course['teacher_email'])->first()->id,
