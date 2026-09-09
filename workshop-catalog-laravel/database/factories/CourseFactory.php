@@ -13,6 +13,7 @@ class CourseFactory extends Factory
     public function definition(): array
     {
         $start = fake()->dateTimeBetween('+1 week', '+2 months');
+        $deliveryMode = fake()->randomElement(CourseRequest::DELIVERY_MODES);
 
         return [
             'title' => fake()->sentence(4),
@@ -23,7 +24,9 @@ class CourseFactory extends Factory
             'start_date' => $start->format('Y-m-d'),
             'end_date' => (clone $start)->modify('+2 weeks')->format('Y-m-d'),
             'language' => 'Italiano',
-            'delivery_mode' => fake()->randomElement(CourseRequest::DELIVERY_MODES),
+            'delivery_mode' => $deliveryMode,
+            'city' => $deliveryMode === 'In presenza' ? fake()->city() : null,
+            'available_spots' => fake()->optional()->numberBetween(0, 30),
             'image' => null,
             'category_id' => Category::factory(),
             'level_id' => Level::factory(),

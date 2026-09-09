@@ -27,6 +27,9 @@ class CourseRequest extends FormRequest
             'end_date' => 'nullable|date|after:start_date',
             'language' => 'required|string|max:50',
             'delivery_mode' => ['required', Rule::in(self::DELIVERY_MODES)],
+            // obbligatoria solo per i corsi in presenza
+            'city' => ['nullable', 'string', 'max:255', 'required_if:delivery_mode,In presenza'],
+            'available_spots' => 'nullable|integer|min:0',
             'image' => 'nullable|image|max:2048',
             'category_id' => 'required|exists:categories,id',
             'level_id' => 'required|exists:levels,id',

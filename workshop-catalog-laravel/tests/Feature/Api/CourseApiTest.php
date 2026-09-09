@@ -28,6 +28,20 @@ test('la Resource non espone i campi interni', function () {
     expect($course)->not->toHaveKeys(['created_at', 'updated_at', 'deleted_at', 'category_id', 'level_id', 'teacher_id']);
 });
 
+test('la Resource include city e available_spots', function () {
+    Course::factory()->create([
+        'delivery_mode' => 'In presenza',
+        'city' => 'Torino',
+        'available_spots' => 8,
+    ]);
+
+    $course = $this->getJson('/api/courses')->json('data.0');
+
+    expect($course)->toHaveKeys(['city', 'available_spots'])
+        ->and($course['city'])->toBe('Torino')
+        ->and($course['available_spots'])->toBe(8);
+});
+
 test('i corsi soft-deleted non compaiono', function () {
     $visible = Course::factory()->create();
     Course::factory()->create()->delete();

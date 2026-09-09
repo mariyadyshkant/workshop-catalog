@@ -20,6 +20,8 @@ class CourseResource extends JsonResource
             'end_date' => $this->end_date,
             'language' => $this->language,
             'delivery_mode' => $this->delivery_mode,
+            'city' => $this->city,
+            'available_spots' => $this->available_spots,
             'image' => $this->image,
             'category' => new CategoryResource($this->whenLoaded('category')),
             'level' => new LevelResource($this->whenLoaded('level')),

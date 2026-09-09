@@ -19,6 +19,8 @@ class Course extends Model
         'end_date',
         'language',
         'delivery_mode',
+        'city',
+        'available_spots',
         'image',
         'category_id',
         'level_id',

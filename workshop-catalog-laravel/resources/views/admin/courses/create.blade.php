@@ -79,6 +79,18 @@
                         </select>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Città</label>
+                        <input type="text" name="city" class="form-control" value="{{ old('city') }}">
+                        <small class="text-muted">Obbligatoria per i corsi "In presenza".</small>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Posti liberi</label>
+                        <input type="number" name="available_spots" class="form-control" min="0"
+                            value="{{ old('available_spots') }}">
+                    </div>
+                </div>
                 <div class="mb-3">
                     <label class="form-label">Immagine</label>
                     <input type="file" name="image" class="form-control" accept="image/*">

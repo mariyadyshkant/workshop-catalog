@@ -70,6 +70,54 @@ test('delivery_mode fuori dai valori ammessi viene rifiutato', function () {
         ->assertSessionHasErrors('delivery_mode');
 });
 
+test('la città è obbligatoria se la modalità è In presenza', function () {
+    $this->post(route('courses.store'), coursePayload([
+        'delivery_mode' => 'In presenza',
+        'city' => '',
+    ]))->assertSessionHasErrors('city');
+});
+
+test('la città non è obbligatoria per i corsi non in presenza', function () {
+    $this->post(route('courses.store'), coursePayload([
+        'delivery_mode' => 'Online',
+        'title' => 'Corso Online Senza Città',
+    ]))->assertRedirect(route('courses.index'))->assertSessionHasNoErrors();
+
+    expect(Course::where('title', 'Corso Online Senza Città')->value('city'))->toBeNull();
+});
+
+test('un corso in presenza con città viene creato', function () {
+    $this->post(route('courses.store'), coursePayload([
+        'delivery_mode' => 'In presenza',
+        'city' => 'Bologna',
+        'title' => 'Workshop a Bologna',
+    ]))->assertRedirect(route('courses.index'));
+
+    expect(Course::where('title', 'Workshop a Bologna')->value('city'))->toBe('Bologna');
+});
+
+test('available_spots accetta null, rifiuta negativi e non interi', function () {
+    $this->post(route('courses.store'), coursePayload([
+        'title' => 'Corso senza posti',
+        'available_spots' => null,
+    ]))->assertRedirect(route('courses.index'))->assertSessionHasNoErrors();
+
+    $this->post(route('courses.store'), coursePayload(['available_spots' => -3]))
+        ->assertSessionHasErrors('available_spots');
+
+    $this->post(route('courses.store'), coursePayload(['available_spots' => 'molti']))
+        ->assertSessionHasErrors('available_spots');
+});
+
+test('available_spots viene salvato', function () {
+    $this->post(route('courses.store'), coursePayload([
+        'title' => 'Corso con 12 posti',
+        'available_spots' => 12,
+    ]))->assertRedirect(route('courses.index'));
+
+    expect(Course::where('title', 'Corso con 12 posti')->value('available_spots'))->toBe(12);
+});
+
 test('end_date deve essere successiva a start_date', function () {
     $this->post(route('courses.store'), coursePayload([
         'start_date' => '2026-07-10',
