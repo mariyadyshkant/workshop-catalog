@@ -1,12 +1,13 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { Signal, Clock, Globe, MonitorPlay, Calendar, CalendarCheck, CircleDot } from 'lucide-react'
+import { Signal, Clock, Globe, MonitorPlay, MapPin, Users, Calendar, CalendarCheck, CircleDot, Ticket } from 'lucide-react'
 import { api, imageUrl } from '../lib/api'
 
 export function CourseDetail() {
     const { id } = useParams()
     const [course, setCourse] = useState(null)
     const [error, setError] = useState(false)
+    const [showBooking, setShowBooking] = useState(false)
 
     useEffect(() => {
         api.get(`/courses/${id}`)
@@ -16,6 +17,12 @@ export function CourseDetail() {
                 setError(true)
             })
     }, [id])
+
+    useEffect(() => {
+        if (!showBooking) return
+        const t = setTimeout(() => setShowBooking(false), 3500)
+        return () => clearTimeout(t)
+    }, [showBooking])
 
     if (error) {
         return (
@@ -39,6 +46,12 @@ export function CourseDetail() {
         { icon: Clock, label: 'Durata', value: `${course.duration_hours} ore` },
         { icon: Globe, label: 'Lingua', value: course.language },
         { icon: MonitorPlay, label: 'Modalità', value: course.delivery_mode },
+        ...(course.delivery_mode === 'In presenza' && course.city
+            ? [{ icon: MapPin, label: 'Città', value: course.city }]
+            : []),
+        ...(course.available_spots != null
+            ? [{ icon: Users, label: 'Posti liberi', value: course.available_spots }]
+            : []),
         { icon: Calendar, label: 'Inizio', value: course.start_date },
         ...(course.end_date ? [{ icon: CalendarCheck, label: 'Fine', value: course.end_date }] : []),
         { icon: CircleDot, label: 'Stato', value: course.status },
@@ -94,6 +107,19 @@ export function CourseDetail() {
                             ))}
                         </div>
                     </div>
+                </div>
+
+                {/* Prenota (anteprima funzionalità futura) */}
+                <div className="mb-4">
+                    <button type="button" className="btn-prenota" onClick={() => setShowBooking(true)}>
+                        <Ticket size={16} strokeWidth={2.5} />
+                        Prenota
+                    </button>
+                    {showBooking && (
+                        <div className="prenota-banner mt-3" role="status">
+                            Prenotazioni disponibili a breve
+                        </div>
+                    )}
                 </div>
 
                 {/* Descrizione */}
