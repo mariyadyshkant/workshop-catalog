@@ -25,6 +25,18 @@ test('un utente admin accede al backoffice', function ($method, $route) {
         ->assertOk();
 })->with($adminRoutes);
 
+test('un admin che apre /dashboard viene rediretto al backoffice', function () {
+    $this->actingAs(User::factory()->admin()->create())
+        ->get(route('dashboard'))
+        ->assertRedirect(route('courses.index'));
+});
+
+test('un utente non admin su /dashboard vede la pagina Breeze', function () {
+    $this->actingAs(User::factory()->create())
+        ->get(route('dashboard'))
+        ->assertOk();
+});
+
 test('la registrazione crea un utente non admin', function () {
     $this->post(route('register'), [
         'name' => 'Mario',

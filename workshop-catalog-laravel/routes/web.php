@@ -12,6 +12,11 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
+    // Gli admin vanno dritti al backoffice invece della pagina Breeze vuota
+    if (auth()->user()->is_admin) {
+        return redirect()->route('courses.index');
+    }
+
     return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
