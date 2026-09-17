@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LevelController;
 use App\Http\Controllers\Admin\TeacherController;
 use App\Http\Controllers\ProfileController;
@@ -12,9 +13,10 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    // Gli admin vanno dritti al backoffice invece della pagina Breeze vuota
+    // Gli admin hanno una vera home del backoffice; un utente normale
+    // vede ancora la pagina Breeze di base.
     if (auth()->user()->is_admin) {
-        return redirect()->route('courses.index');
+        return app(DashboardController::class)->index();
     }
 
     return view('dashboard');

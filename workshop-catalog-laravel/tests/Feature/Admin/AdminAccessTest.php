@@ -25,10 +25,11 @@ test('un utente admin accede al backoffice', function ($method, $route) {
         ->assertOk();
 })->with($adminRoutes);
 
-test('un admin che apre /dashboard viene rediretto al backoffice', function () {
+test('un admin che apre /dashboard vede la home del backoffice', function () {
     $this->actingAs(User::factory()->admin()->create())
         ->get(route('dashboard'))
-        ->assertRedirect(route('courses.index'));
+        ->assertOk()
+        ->assertSee('Ultimi corsi aggiunti', escape: false);
 });
 
 test('un utente non admin su /dashboard vede la pagina Breeze', function () {
