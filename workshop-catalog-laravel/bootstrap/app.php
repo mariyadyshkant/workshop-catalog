@@ -16,6 +16,11 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
         ]);
+
+        // Il TLS è terminato dal proxy di Railway: senza questo Laravel non
+        // si accorge che la richiesta è arrivata in HTTPS (cookie di sessione
+        // senza flag Secure, link generati in http://, ecc.).
+        $middleware->trustProxies(at: '*');
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //
