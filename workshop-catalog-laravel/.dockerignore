@@ -9,6 +9,7 @@ storage/framework/sessions/*
 storage/framework/views/*
 storage/logs/*
 storage/*.key
+bootstrap/cache/*.php
 database/database.sqlite
 public/build
 public/hot
