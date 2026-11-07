@@ -1,92 +1,101 @@
-# Corso Rama — Frontend (React)
- 
-Catalogo pubblico di **Corso Rama**, un sito per la scoperta e consultazione di corsi. Consuma l'API REST esposta dal backend Laravel in un repository separato: [workshop-catalog](https://github.com/mariyadyshkant/workshop-catalog) (cartella `workshop-catalog-laravel`).
- 
-## Cosa fa
- 
-- **Home** con elenco corsi, filtro per categoria deep-linkabile (link diretti a una categoria specifica) e ricerca
-- **Pagina di dettaglio corso** — informazioni complete (docente, durata, livello, modalità, città per i corsi in presenza, posti liberi), con un bottone "Prenota" attualmente segnaposto in vista del sistema di prenotazione futuro
-- Link al login del backoffice per l'accesso amministrativo
-## Stack
- 
-- **React 19** + **React Router 7**
-- **Vite** come build tool
-- **Axios** per le chiamate all'API
-- **Motion** (Framer Motion) per le animazioni — fade-in/slide-up in hero, transizioni sulle card corso
-- **lucide-react** per le icone
-## Configurazione
- 
-```bash
-npm install
-cp .env.example .env   # imposta VITE_API_URL con l'URL del backend
-npm run dev
-```
- 
-`VITE_API_URL` deve puntare all'endpoint `/api` del backend Laravel (es. `http://localhost:8000/api` in locale, l'URL Railway in produzione).
- 
-## Deploy
- 
-In produzione gira su **Netlify**, con redirect SPA configurati (`_redirects`) per gestire il routing lato client di React Router.
- 
-## Prossimi sviluppi
- 
-Il bottone "Prenota" sulla pagina di dettaglio è per ora solo un'anticipazione visiva: l'obiettivo è costruire un vero sistema di autenticazione utente che permetta di registrarsi e prenotare un posto in un corso direttamente da qui.
- 
+# Corsorama
 
-# Corso Rama — Backend (Laravel)
- 
-Backend e pannello amministrativo di **Corso Rama**, un catalogo corsi full-stack. Questo repository espone l'API pubblica consumata dal frontend React e gestisce l'inserimento/modifica dei corsi tramite un backoffice ad accesso riservato.
- 
-Il frontend pubblico vive in un repository separato: [workshop-catalog-react](https://github.com/mariyadyshkant/workshop-catalog).
- 
+Catalogo di corsi full-stack: un **backend Laravel** con pannello di amministrazione e API REST pubblica, e un **frontend React** che la consuma per mostrare il catalogo ai visitatori.
+
+Progetto finale della specializzazione PHP/Laravel di Boolean.
+
+**Demo online:** [corsorama.mariyadyshkant.com](https://corsorama.mariyadyshkant.com) · **Portfolio:** [mariyadyshkant.com](https://mariyadyshkant.com)
+
 ## Cosa fa
- 
-- **API pubblica** (`/api/courses`, `/api/categories`, `/api/levels`) — elenco corsi con ricerca full-text su titolo/descrizione, filtro per categoria/livello/modalità di erogazione, paginazione
-- **Backoffice** (`/dashboard`, protetto da autenticazione + middleware admin) — CRUD completo su corsi, categorie, livelli e docenti, con upload immagine copertina
-- **Autenticazione** via Laravel Breeze (login/registrazione classici); solo gli utenti marcati `is_admin` accedono al backoffice, gli altri restano sulla dashboard base
+
+- **Catalogo pubblico:** elenco dei corsi con ricerca per titolo e descrizione, filtri per categoria, livello e modalità (online o in presenza), paginazione e pagina di dettaglio (docente, durata, livello, città per i corsi in presenza, posti liberi).
+- **Backoffice:** pannello riservato agli amministratori, con CRUD completo su corsi, categorie, livelli e docenti, upload dell'immagine di copertina e eliminazione reversibile (soft delete) dei corsi.
+- **Autenticazione:** login e registrazione con Laravel Breeze; solo gli utenti con `is_admin` accedono al backoffice.
+
+## Architettura
+
+Monorepo con due applicazioni indipendenti:
+
+```
+workshop-catalog/
+├── workshop-catalog-laravel/   backend: API REST + backoffice (Laravel 12)
+└── workshop-catalog-react/     frontend pubblico (React 19)
+```
+
+```
+Browser ──► Frontend React (Netlify) ──► API REST /api (Laravel, Railway) ──► SQLite
+                                         Backoffice Blade /dashboard ◄── amministratori
+```
+
+Dettagli in [`workshop-catalog-laravel`](workshop-catalog-laravel) e [`workshop-catalog-react`](workshop-catalog-react).
+
 ## Modello dati
- 
-Quattro entità principali:
- 
-- **Corso** — titolo, descrizione, durata in ore, requisiti, date inizio/fine, lingua, modalità di erogazione (online/in presenza), città (per i corsi in presenza), posti liberi, immagine; soft delete
-- **Categoria**, **Livello**, **Docente** — anagrafiche collegate al corso tramite relazioni `belongsTo`
-## Validazione
- 
-Ogni entità amministrabile ha una propria classe `FormRequest` dedicata (`app/Http/Requests/Admin/`), invece di validazione inline nei controller — regole centralizzate e riutilizzabili tra creazione e modifica.
- 
+
+Quattro entità collegate: **Corso**, **Categoria**, **Livello**, **Docente**. Un corso appartiene a una categoria, a un livello e a un docente. I corsi hanno date di inizio e fine, lingua, modalità di erogazione, città e posti liberi (per quelli in presenza), immagine e soft delete.
+
 ## Stack
- 
-- **Laravel 12** (PHP 8.2)
-- **SQLite** come database (scelta per semplicità di deploy: un singolo file, nessun server DB separato da gestire)
-- **Breeze** per l'autenticazione
-- Frontend Blade per il backoffice, API REST (Resource classes) per il frontend pubblico
-## Deploy
- 
-In produzione gira su **Railway**, come container Docker:
- 
-- Build a due stage: gli asset Vite del backoffice vengono compilati in uno stage Node separato, poi copiati nell'immagine PHP finale (immagine più leggera, niente Node a runtime)
-- Il file SQLite vive su un volume persistente montato su `/data`
-- All'avvio: cache della configurazione, migrazioni automatiche (`migrate --force`), `storage:link`, poi il server Laravel
-- CORS configurato via variabile d'ambiente (`CORS_ALLOWED_ORIGINS`) per accettare richieste dal frontend Netlify
-## Sviluppo locale
- 
+
+| Parte | Tecnologie |
+|---|---|
+| Backend | PHP 8.2, Laravel 12, Laravel Breeze, Form Request, API Resource, SQLite |
+| Test | Pest (test Feature su backoffice, API e autenticazione) |
+| Frontend | React 19, React Router 7, Vite, Axios, Motion, lucide-react |
+| Deploy | Railway (backend in Docker, volume persistente per SQLite), Netlify (frontend) |
+
+## API pubblica
+
+| Metodo | Endpoint | Descrizione |
+|---|---|---|
+| GET | `/api/courses` | Elenco corsi (12 per pagina). Parametri: `search`, `category_id`, `level_id`, `delivery_mode` |
+| GET | `/api/courses/{id}` | Dettaglio di un corso |
+| GET | `/api/categories` | Elenco categorie |
+| GET | `/api/levels` | Elenco livelli |
+
+## Scelte progettuali
+
+- **Validazione centralizzata:** ogni entità amministrabile ha una propria classe Form Request, invece di regole scritte nei controller.
+- **API Resource:** la forma delle risposte JSON è definita in classi dedicate, separata dai modelli.
+- **Accesso al backoffice:** middleware `admin` sopra l'autenticazione.
+- **SQLite:** scelta per semplicità di deploy, un solo file su volume persistente e nessun server di database da gestire.
+- **Frontend separato:** il catalogo pubblico è indipendente dal backoffice e comunica solo tramite API, con CORS configurato per il dominio del frontend.
+
+## Test
+
+Il backend è coperto da test automatici con Pest su backoffice (accesso e CRUD di corsi, categorie, livelli, docenti), API dei corsi e autenticazione.
+
 ```bash
+cd workshop-catalog-laravel
+php artisan test
+```
+
+## Avvio in locale
+
+```bash
+# Backend
+cd workshop-catalog-laravel
 composer install
 cp .env.example .env
 php artisan key:generate
-php artisan migrate
-npm install && npm run build   # asset del backoffice (Blade + Breeze)
-php artisan serve
-```
- 
-## Prossimi sviluppi
- 
-Il backoffice e l'API sono lo stato attuale; l'obiettivo successivo è un sistema di autenticazione e prenotazione lato utente pubblico, che permetta a chi consulta il catalogo di registrarsi e prenotare direttamente un posto in un corso.
- 
-## Autrice
- 
-Mariya Dyshkant
-[Portfolio](https://mariyadyshkant.com) · [LinkedIn](https://linkedin.com/in/mariya-dyshkant-45bb411ba)
- 
+php artisan migrate --seed   # dati di esempio e utente admin di sviluppo
+npm install && npm run build
+php artisan serve            # http://localhost:8000
 
- 
+# Frontend (in un altro terminale)
+cd workshop-catalog-react
+npm install
+echo "VITE_API_URL=http://localhost:8000/api" > .env
+npm run dev
+```
+
+## Deploy
+
+- **Backend su Railway:** immagine Docker a due stage (gli asset Vite del backoffice si compilano in uno stage Node, poi si copiano nell'immagine PHP finale); database SQLite su un volume montato su `/data`; all'avvio cache della configurazione, migrazioni automatiche (`migrate --force`) e `storage:link`.
+- **Frontend su Netlify:** build Vite con fallback SPA, così il refresh su `/courses/5` non dà 404. CORS lato backend via `CORS_ALLOWED_ORIGINS`.
+
+## Prossimi sviluppi
+
+Registrazione degli utenti pubblici e prenotazione di un posto in un corso. Il bottone «Prenota» nella pagina di dettaglio è per ora solo un'anteprima della funzione.
+
+## Autrice
+
+Mariya Dyshkant · [Portfolio](https://mariyadyshkant.com) · [LinkedIn](https://www.linkedin.com/in/mariyadyshkant/)
